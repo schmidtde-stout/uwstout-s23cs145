@@ -6,6 +6,7 @@ class BankAccountTest {
 
 	@Test
 	void testBankAccountConstruction() {
+		
       BankAccount chippysAccount = new BankAccount(1000, "Chippy");
       assertEquals(chippysAccount.getName(), "Chippy");
       assertTrue(chippysAccount.getAccountNumber() <= 50000);
