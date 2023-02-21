@@ -4,7 +4,7 @@ import java.util.Random;
    BankAccount simulates a deposit account allowing the withdraw and 
    depositing of monies into an account.
 */
-public class BankAccount {
+abstract public class BankAccount {
 
 	private double balance;
 	private String name;
@@ -19,6 +19,7 @@ public class BankAccount {
 	 */
 	public BankAccount(double startingBalance, String name) {
 		balance = startingBalance;
+		//name = name;
 		this.name = name;
 		assignAccountNumber();
 	}
@@ -96,5 +97,7 @@ public class BankAccount {
 		this.withdraw(amount);
 		targetAccount.deposit(amount);
 	}
+	
+	abstract public void endOfMonth();
 
 }

@@ -9,6 +9,8 @@
  */
 public class CheckingAccount extends BankAccount {
 	private int nextCheckNumber;
+	final static private double MINIMUM_BALANCE = 1000;
+	final static private double MINIMUM_BALANCE_FEE = 5.00;
 
 	/**
 	 * CheckingAccount default constructor, defaults balance to zero and starting
@@ -43,6 +45,12 @@ public class CheckingAccount extends BankAccount {
 			super.withdraw(amount + 2.50);
 		}
 
+	}
+	
+	public void endOfMonth( ) {
+		if (getBalance() < MINIMUM_BALANCE) {
+			withdraw(MINIMUM_BALANCE_FEE);
+		}
 	}
 
 }
