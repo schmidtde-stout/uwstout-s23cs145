@@ -1,45 +1,48 @@
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class BankAccountTest extends BankAccount {
 
-	// this is a way to "fake out" the abstract class for the purpose of unit testing
-	public BankAccountTest(double startingBalance, String name) {
-		super(startingBalance, name);
+	private BankAccount account;
+
+	// we changed our test to use a default constructor
+	// JUnit has some sensitive boundaries when you start
+	// creating JUnit tests with non-default constructors
+	public BankAccountTest() {
+		super(1000);
 	}
-	
 
 	@Override
 	public void endOfMonth() {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@BeforeEach
+	void setUp() {
+		account = new BankAccountTest();
 	}
 
 	@Test
 	void testBankAccountConstruction() {
-		
-      BankAccount chippysAccount = new BankAccountTest(1000, "Chippy");
-      chippysAccount.endOfMonth();
-      assertEquals(chippysAccount.getName(), "Chippy");
-      assertTrue(chippysAccount.getAccountNumber() <= 50000);
-      assertTrue(chippysAccount.getAccountNumber() > 0);
-      assertEquals(chippysAccount.getBalance(), 1000);
+		assertEquals(account.getName(), "Charity");
+		assertTrue(account.getAccountNumber() <= 50000);
+		assertTrue(account.getAccountNumber() > 0);
+		assertEquals(account.getBalance(), 1000);
 	}
 
 	@Test
 	void testBankAccountDeposit() {
-      BankAccount chippysAccount = new BankAccountTest(1000, "Chippy");
-      chippysAccount.deposit(500);
-      assertEquals(chippysAccount.getBalance(), 1500);
+		account.deposit(500);
+		assertEquals(account.getBalance(), 1500);
 	}
 
 	@Test
 	void testBankAccountWithdrawal() {
-      BankAccount chippysAccount = new BankAccountTest(1000, "Chippy");
-      chippysAccount.withdraw(123);
-      assertEquals(chippysAccount.getBalance(), 877);
+		account.withdraw(123);
+		assertEquals(account.getBalance(), 877);
 	}
-
 
 }

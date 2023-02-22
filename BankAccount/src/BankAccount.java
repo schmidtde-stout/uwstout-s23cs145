@@ -4,7 +4,20 @@ import java.util.Random;
    BankAccount simulates a deposit account allowing the withdraw and 
    depositing of monies into an account.
 */
-abstract public class BankAccount {
+public abstract class BankAccount implements EndOfMonthActivities, Comparable<BankAccount> {
+
+	@Override
+	public int compareTo(BankAccount o) {
+		// Returns a negative integer, zero, or a positive integer 
+		// as this object is less than, equal to, or greater than the specified object.
+		if (balance < o.getBalance()) {
+			return -1;
+		}
+		else if(balance > o.getBalance()) {
+			return 1;
+		}
+		return 0;
+	}
 
 	private double balance;
 	private String name;
@@ -98,6 +111,6 @@ abstract public class BankAccount {
 		targetAccount.deposit(amount);
 	}
 	
-	abstract public void endOfMonth();
+
 
 }
