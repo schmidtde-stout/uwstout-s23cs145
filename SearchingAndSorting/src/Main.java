@@ -25,7 +25,7 @@ public class Main {
 	// using the selection sort algorithm, efficiency O(n^2)
 	public static void selectionSort(ArrayList<Integer> list) {
 		
-		for (int i = 0; i < list.size(); ++i) {
+		for (int i = 0; i < list.size() - 1; ++i) {
 
 			int minimum = list.get(i);
 			int minimumAt = i;
