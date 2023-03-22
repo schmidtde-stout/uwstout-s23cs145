@@ -45,7 +45,30 @@ public class ManualArrayList {
 		size++;
 	}
 	
-	public void addLink(Integer data) {
+	public void addToFront(Integer data) {
+		Node newNode = new Node();
+		newNode.data = data;
+		newNode.next = first;
+		first = newNode;		
+	}
+
+	public void addToEnd(Integer data) {
+		Node n = first;
+		Node last = first;
+		while(n != null) {
+			last = n;
+			n = n.next;
+		}
+		
+		Node newNode = new Node();
+		newNode.data = data;
+		newNode.next = null;
+		if (last == null) {
+			first = newNode;
+		}
+		else {
+			last.next = newNode;
+		}
 		
 	}
 	

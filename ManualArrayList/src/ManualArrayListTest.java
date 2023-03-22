@@ -45,4 +45,15 @@ class ManualArrayListTest {
 			list.add(i);
 		}
 	}
+	
+	
+	@Test
+	void testTraverseList() {
+		ManualArrayList list = new ManualArrayList();
+		for(int i = 0; i < 20; i++) {
+			list.addToEnd(i);
+		}
+		list.walk();	
+	}
+
 }
