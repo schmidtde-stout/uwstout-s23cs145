@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class Bank {
 
@@ -22,7 +24,23 @@ public class Bank {
 			account.getAccountNumber() + ": " + account.getBalance());
 		}
 		
+		HashMap<String, BankAccount> accountsByName = new HashMap<String,BankAccount>();
+		for(BankAccount account : list) {
+			String key = account.getName();
+			accountsByName.put(key, account);
+		}
 		
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("Enter the account holders name: ");
+		String name = scanner.nextLine();
+		BankAccount account = accountsByName.get(name);
+		if (account == null) {
+			System.out.println("Sorry, we have no account for " + name);
+		}
+		else {
+			System.out.println("Welcome back " + name + ", your balance is " + account.getBalance());
+		}
+		scanner.close();
 		
 
 	}
