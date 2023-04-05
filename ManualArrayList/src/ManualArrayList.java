@@ -5,11 +5,13 @@ public class ManualArrayList {
 	private int size;
 	
 	private Node first;
+	private Node last;
 	
 	public ManualArrayList() {
 		list = new Integer[10];
 		size = 0;
 		first = null;
+		last = null;
 	}
 	
 	public Integer get(int i) {
@@ -49,21 +51,27 @@ public class ManualArrayList {
 		Node newNode = new Node();
 		newNode.data = data;
 		newNode.next = first;
-		first = newNode;		
+		first = newNode;
+		if (last == null) {
+			last = newNode;
+		}
+	}
+	
+	public Integer removeFromFront() {
+		Integer data = null;
+		if (first != null) {
+			data = first.data;
+			first = first.next;
+		}
+		return data;
 	}
 
 	public void addToEnd(Integer data) {
-		Node n = first;
-		Node last = first;
-		while(n != null) {
-			last = n;
-			n = n.next;
-		}
-		
 		Node newNode = new Node();
 		newNode.data = data;
 		newNode.next = null;
 		if (last == null) {
+			last = newNode;
 			first = newNode;
 		}
 		else {

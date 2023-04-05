@@ -1,6 +1,8 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
 
 class ManualArrayListTest {
@@ -44,6 +46,7 @@ class ManualArrayListTest {
 		for(int i = 0; i < 20; i++) {
 			list.add(i);
 		}
+		
 	}
 	
 	
@@ -53,7 +56,26 @@ class ManualArrayListTest {
 		for(int i = 0; i < 20; i++) {
 			list.addToEnd(i);
 		}
+		for(Integer number : list) {
+			
+		}
+		
+		
 		list.walk();	
+	}
+	
+	@Test
+	void testEnhancedFor() {
+		ArrayList<String> list = new ArrayList<String>();
+		for(String line : list) {
+			System.out.println(line);
+		}
+		
+		int[] numbers = new int[100];
+		for(int n : numbers) {
+			System.out.println(n);
+		}
+		
 	}
 
 }
