@@ -17,7 +17,9 @@ import java.util.List;
 public class Main extends Application {
 
     private static final String IMAGE_PATH_FORMAT = "%s_of_%s.jpg";
-
+    private List<PokerCard>  deck;
+    private Hand playerHand;
+    
     public static void main(String[] args) {
         launch(args);
     }
@@ -31,11 +33,11 @@ public class Main extends Application {
         HBox handBox = new HBox(10);
         handBox.setAlignment(Pos.CENTER);
 
-        List<PokerCard> deck = createDeck();
+        deck = createDeck();
         Collections.shuffle(deck);
 
         // Deal 5 cards to each player
-        Hand playerHand = new Hand();
+        playerHand = new Hand();
 
         for (int i = 0; i < 5; i++) {
             playerHand.addCard(deck.remove(0));
