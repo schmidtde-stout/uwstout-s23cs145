@@ -1,8 +1,14 @@
 package application;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,15 +16,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class Main extends Application {
 
     private static final String IMAGE_PATH_FORMAT = "%s_of_%s.jpg";
     private List<PokerCard>  deck;
     private Hand playerHand;
+    private Label scoreLabel;
     
     public static void main(String[] args) {
         launch(args);
@@ -71,9 +74,12 @@ public class Main extends Application {
         }
 
         Label nameLabel = new Label(playerName);
-        Label scoreLabel = new Label("Score: " + hand.getScoreString());
+        scoreLabel = new Label("Score: " + hand.getScoreString());
+        
+        Button playAgainButton = new Button("Play Again?");
+        playAgainButton.setOnAction(this::playAgainPressed);
 
-        VBox handBox = new VBox(10, nameLabel, cardBox, scoreLabel);
+        VBox handBox = new VBox(10, nameLabel, cardBox, scoreLabel, playAgainButton);
         handBox.setAlignment(Pos.CENTER);
         return handBox;
     }    
@@ -87,4 +93,24 @@ public class Main extends Application {
         }
         return deck;
     }
+    
+    public void playAgainPressed(ActionEvent event) {
+    	System.out.println("Re-dealing cards....");
+    	
+    	for(PokerCard card : playerHand.getCards()) {
+    		deck.add(card);
+    	}
+    	
+        Collections.shuffle(deck);
+
+        // Deal 5 cards to each player
+        playerHand = new Hand();
+
+        for (int i = 0; i < 5; i++) {
+            playerHand.addCard(deck.remove(0));
+        }    
+        
+        scoreLabel.setText("Score: " + playerHand.getScoreString());
+    }
+    
 }
