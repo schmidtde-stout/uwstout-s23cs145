@@ -5,173 +5,137 @@ import java.util.Collections;
 import java.util.List;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    private static final String IMAGE_PATH_FORMAT = "%s_of_%s.jpg";
-    private List<PokerCard>  deck;
-    private Hand playerHand;
-    private PokerHandBox playerBox; 
-    
-    
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
-    public class ButtonHandler implements EventHandler<ActionEvent> {
+	// Variables for managing game state
+	private List<PokerCard> deck;
+	private Hand playerHand, computerHand;
+	private PokerHandBox playerBox, computerBox;
+	private int totalAmount = 1000;
+	private int betAmount = 0;
 
-		@Override
-		public void handle(ActionEvent arg0) {
-	    	System.out.println("Re-dealing cards....");
-	    	
-	    	for(PokerCard card : playerHand.getCards()) {
-	    		deck.add(card);
-	    	}
-	    	
-	        Collections.shuffle(deck);
+	// UI components
+	private Label totalLabel;
+	private TextField betTextField;
+	private Button betButton;
+	private Label result;
 
-	        // Deal 5 cards to each player
-	        playerHand = new Hand();
+	public static void main(String[] args) {
+		launch(args);
+	}
 
-	        for (int i = 0; i < 5; i++) {
-	            playerHand.addCard(deck.remove(0));
-	        }    
-	        
-	        playerBox.update(playerHand);
-			
+	// Method for dealing cards to the player and computer
+	private void deal() {
+		// Add all cards back to the deck and shuffle
+		if (playerHand != null) {
+			deck.addAll(playerHand.getCards());
+			deck.addAll(computerHand.getCards());
 		}
-    	
-    }
+		Collections.shuffle(deck);
 
-    @Override
-    public void start(Stage primaryStage) {
-        VBox root = new VBox(10);
-        root.setPadding(new Insets(15, 15, 15, 15));
-        root.setAlignment(Pos.CENTER);
+		// Deal cards to player and computer
+		playerHand = new Hand();
+		computerHand = new Hand();
+		for (int i = 0; i < 5; i++) {
+			playerHand.addCard(deck.remove(0));
+			computerHand.addCard(deck.remove(0));
+		}
+	}
 
-        HBox handBox = new HBox(10);
-        handBox.setAlignment(Pos.CENTER);
+	// Method to create the game UI and set up the game logic
+	@Override
+	public void start(Stage primaryStage) {
+		VBox root = new VBox(10);
+		root.setPadding(new Insets(15, 15, 15, 15));
+		root.setAlignment(Pos.CENTER);
 
-        deck = createDeck();
-        Collections.shuffle(deck);
+		HBox handBox = new HBox(10);
+		handBox.setAlignment(Pos.CENTER);
 
-        // Deal 5 cards to each player
-        playerHand = new Hand();
-
-        for (int i = 0; i < 5; i++) {
-            playerHand.addCard(deck.remove(0));
-        }
-
-        // Create the player's hand UI
-        playerBox = new PokerHandBox(playerHand, "Player");
-        
-        Button playAgainButton = new Button("Play Again?");
-        
-        // approach 1 - this::
-        // playAgainButton.setOnAction(this::playAgainPressed);
-        
-        // approach 2 - design a class that implements the event handler interface
-        // playAgainButton.setOnAction(new ButtonHandler());
-        
-        // approach 3 - create an anonymous inner class - "construct" an interface
-        /*
-        playAgainButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-		    	System.out.println("Re-dealing cards....");
-		    	
-		    	for(PokerCard card : playerHand.getCards()) {
-		    		deck.add(card);
-		    	}
-		    	
-		        Collections.shuffle(deck);
-
-		        // Deal 5 cards to each player
-		        playerHand = new Hand();
-
-		        for (int i = 0; i < 5; i++) {
-		            playerHand.addCard(deck.remove(0));
-		        }    
-		        
-		        playerBox.update(playerHand);
-				
+		// Initialize the deck with all cards
+		deck = new ArrayList<>();
+		for (Suit suit : Suit.values()) {
+			for (Rank rank : Rank.values()) {
+				deck.add(new PokerCard(suit, rank));
 			}
-        	
-        });
-        */
-        
-        // approach 4 - lambda expression (most popular)
-        playAgainButton.setOnAction((e) -> {
-	    	System.out.println("Re-dealing cards WITH LAMBDA....");
-	    	
-	    	for(PokerCard card : playerHand.getCards()) {
-	    		deck.add(card);
-	    	}
-	    	
-	        Collections.shuffle(deck);
+		}
 
-	        // Deal 5 cards to each player
-	        playerHand = new Hand();
+		// Setup each hand
+		deal();
+		playerBox = new PokerHandBox(playerHand, "Player", true);
+		computerBox = new PokerHandBox(computerHand, "Computer", false);
 
-	        for (int i = 0; i < 5; i++) {
-	            playerHand.addCard(deck.remove(0));
-	        }    
-	        
-	        playerBox.update(playerHand);        	
-        });
-        
+		// Set up Play Again button logic
+		Button playAgainButton = new Button("Play Again?");
+		playAgainButton.setOnAction((e) -> {
+			deal();
+			playerBox.update(playerHand);
+			computerBox.setReveal(false);
+			computerBox.update(computerHand);
+			betTextField.setText("0");
+			betTextField.setDisable(false);
+			betButton.setDisable(false);
+			result.setText("");
+		});
 
-        // Create the main layout
-        VBox mainLayout = new VBox(20, playerBox, playAgainButton);
-        mainLayout.setPadding(new Insets(20));
-        mainLayout.setAlignment(Pos.CENTER);
+		// Set up UI components for betting
+		totalLabel = new Label("" + totalAmount);
+		betTextField = new TextField("" + betAmount);
+		betTextField.setPrefWidth(50);
+		betTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+			try {
+				betAmount = Integer.parseInt(newValue);
+			} catch (NumberFormatException ex) {
+				betTextField.setText("" + betAmount);
+			}
+		});
 
-        Scene scene = new Scene(mainLayout);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Poker Game");
-        primaryStage.show();
-    }
-    
+		// Set up Bet button logic
+		betButton = new Button("Bet!");
+		betButton.setOnAction((e) -> {
+			computerBox.setReveal(true);
+			computerBox.update(computerHand);
+			if (playerHand.getScoreValue() > computerHand.getScoreValue()) {
+				result.setText("You WON " + betAmount + "!");
+				totalAmount += betAmount;
+				betAmount = 0;
+			} else if (playerHand.getScoreValue() < computerHand.getScoreValue()) {
+				result.setText("You LOST " + betAmount + "!");
+				totalAmount -= betAmount;
+				betAmount = 0;
+			} else {
+				result.setText("You TIED!");
+				betAmount = 0;
+			}
+			totalLabel.setText("" + totalAmount);
+			betTextField.setDisable(true);
+			betButton.setDisable(true);
+		});
 
-    private List<PokerCard> createDeck() {
-        List<PokerCard> deck = new ArrayList<>();
-        for (Suit suit : Suit.values()) {
-            for (Rank rank : Rank.values()) {
-                deck.add(new PokerCard(suit, rank));
-            }
-        }
-        return deck;
-    }
-    
-    /*
-    public void playAgainPressed(ActionEvent event) {
-    	System.out.println("Re-dealing cards....");
-    	
-    	for(PokerCard card : playerHand.getCards()) {
-    		deck.add(card);
-    	}
-    	
-        Collections.shuffle(deck);
+		HBox playerControls = new HBox(5, new Label("Total"), totalLabel, new Label("Bet"), betTextField, betButton,
+				playAgainButton);
+		playerControls.setAlignment(Pos.CENTER);
+		result = new Label("");
 
-        // Deal 5 cards to each player
-        playerHand = new Hand();
+		// Create the main layout
+		VBox mainLayout = new VBox(20, computerBox, playerBox, playerControls, result);
+		mainLayout.setPadding(new Insets(20));
+		mainLayout.setAlignment(Pos.CENTER);
 
-        for (int i = 0; i < 5; i++) {
-            playerHand.addCard(deck.remove(0));
-        }    
-        
-        playerBox.update(playerHand);
-    }
-    */
-    
+		Scene scene = new Scene(mainLayout);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("Poker Game");
+		primaryStage.show();
+	}
+
 }

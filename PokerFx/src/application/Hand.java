@@ -6,7 +6,7 @@ import java.util.Collections;
  * Represents a hand of poker cards with methods to add cards, count cards,
  * and evaluate hand scores.
  */
-public class Hand {
+public class Hand implements Comparable<Hand>{
 	private ArrayList<PokerCard> cards;
  
    /**
@@ -142,6 +142,29 @@ public class Hand {
 			score = "Pair";
 		}
 		return score;
+	}
+	
+	public int getScoreValue() {
+		int score = 0;
+		if (hasStraight() && hasFlush()) {
+			score = 6;
+		} else if (this.hasFourOfaKind()) {
+			score = 5;
+		} else if (this.hasFlush()) {
+			score = 4;
+		} else if (this.hasStraight()) {
+			score = 3;
+		} else if (this.hasThreeOfaKind()) {
+			score = 2;
+		} else if (this.hasPair()) {
+			score = 1;
+		}
+		return score;
+	}
+
+	@Override
+	public int compareTo(Hand o) {
+		return (getScoreValue() - o.getScoreValue());
 	}
 
 }
